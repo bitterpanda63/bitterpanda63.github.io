@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Debugging your Byte Buddy Agent
-order: 3
+order: 1
 ---
 
 Hiya!
