@@ -6,4 +6,4 @@ permalink: /about/
 
 Bitterpanda63's Blog
 
-Expanding here in future...
+I'll be updating this in the future
