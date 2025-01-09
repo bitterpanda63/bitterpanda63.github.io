@@ -47,4 +47,13 @@ public class MyGenericAdvice {
 }
 ```
 
+## Use suppress to ensure safety of the application
+If you are planning on instrumenting somebody else's app or even your own app it's smart to use the suppress feature of Byte Buddy ([doc](https://javadoc.io/static/net.bytebuddy/byte-buddy/1.10.4/net/bytebuddy/asm/Advice.OnMethodEnter.html#suppress--)). 
+```diff
+- @Advice.OnMethodEnter
++ @Advice.OnMethodEnter(suppress = Throwable.class)
+```
+This will catch all errors you made in your snippet of advice code, even runtime errors.
+
+
 That's it for now with my ByteBuddy tips, I'll link to new blog post with new tips when I remember them!
