@@ -4,9 +4,7 @@ title: Tips & Tricks for your Byte Buddy Agent
 order: 1
 ---
 
-Hiya!
-
-I've been working on Zen by Aikido for a couple of months now, It's a project that requires a lot of instrumentation/monkey-patching. So for our Java version we've decided to use [ByteBuddy](https://bytebuddy.net),
+Hiya! I've been working on Zen by Aikido for a couple of months now, It's a project that requires a lot of instrumentation/monkey-patching. So for our Java version we've decided to use [ByteBuddy](https://bytebuddy.net),
 which is also used by (iirc) Opentelemetry and Datadog.
 
 Now the way you select which classes should be transformed is using `ElementMatchers`, but you can quickly get lost when stuff starts to break.
