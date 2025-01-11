@@ -39,3 +39,57 @@ Now looking at the third patent we start seeing something that closely resembles
 <img src="https://github.com/user-attachments/assets/7f2891cb-4978-4fc1-8a1c-522b7334d28f" alt="sketch of smart bottle cap" width="250"/>
 
 According to the patent **210** is a photosensor, which is used to detect ambient light (i.e. bottle being open). But a photosensor could also be used to measure distances. So our original guess might be right? The patent makes no reference to capacitive strips or another way of measuring the contents, it does make a claim that the bottle can monitor water intake. Is this how they do it?
+
+## Bluetooth and beyond!
+### Using ADB
+Alright, the patent was interesting, but how does the communication work between your phone and the water bottle. It's **Bluetooth**, yes, but let us try and take a peek behind the curtain. To do so I'll be using my Android phone with **USB Debugging** and **Bluetooth HCI snoop logs**, enabled.
+
+To extract the Bluetooth HCI snoop logs just use the following **adb** commands :
+```bash
+adb devices # Verify that your phone shows up here
+adb bugreport my_bugreport
+unzip my_bugreport.zip -d my_bugreport && cd my_bugreport
+```
+Now in the `my_bugreport` folder you'll have to locate he HCI snoop logs, I found mine in the following subdirectory : 
+```
+my_bugreport/FS/data/misc/bluetooth/logs/btsnoop_hci.log
+```
+Now we want to inspect the logs, you can open them using a tool like [**Wireshark**](https://www.wireshark.org/).  
+#### Using nRF Connect
+Using a tool on my phone called *nRF Connect* I was also able to identify the LARQ Connection and play around with it, I was able to read out the serial number, hardware revision, manufacturer, firmware & software version, battery level and some other data.
+I also was able to debug the messages sent between my phone and the bottle, which I will be analysing.
+### Bluetooth findings
+#### Status updates : ResponseGetCapUiState
+One message which just kept coming back was the one below, which I've split into three parts, one part was an identifier `type.googleapis.com/ResponseGetCapUiState`. The un-decoded data could mean a couple of things, my guess right now is that it represents the filtering status (Adventure, Purifying, off, ...) and the current volume.
+```
+?
+0D-03-00-00-00-10-01-1A-31-0A-29
+
+type.googleapis.com/ResponseGetCapUiState
+74-79-70-65-2E-67-6F-6F-67-6C-65-61-70-69-73-2E-63-6F-6D-2F-52-65-73-70-6F-6E-73-65-47-65-74-43-61-70-55-69-53-74-61-74-65
+
+?
+12-04-08-0F-10-01
+```
+Another message which was only sent when the  purifying was turned on is exactly the same, except for the last part :
+```
+[?]  [?]  [?]  [Purifying]   [?]  [?]
+12 - 04 - 08 - 03          - 10 - 01
+```
+By switching between the different modes and analysing the send commands I've created the following table : 
+
+| Hex | Meaning         |
+| --- | --------------- |
+| 03  | Purifying       |
+| 0F  | Nothing         |
+| 04  | Adventure Mode  |
+
+
+#### The tale of the mysterious counter
+Another common message is this one :
+```
+(0x) 0D-{?}-00-00-00-10-01
+```
+Where the question mark is incrementing constantly, the messages get sent some ms apart from each other and keep coming. I think it's a sort of heartbeat?
+
+Continuing later...
