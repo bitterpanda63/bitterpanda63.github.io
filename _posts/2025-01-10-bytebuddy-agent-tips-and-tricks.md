@@ -1,7 +1,7 @@
 ---
 layout: post
-title: Debugging your Byte Buddy Agent
-order: 3
+title: Tips & Tricks for your Byte Buddy Agent
+order: 1
 ---
 
 Hiya!
@@ -57,3 +57,9 @@ This will catch all errors you made in your snippet of advice code, even runtime
 
 
 That's it for now with my ByteBuddy tips, I'll link to new blog post with new tips when I remember them!
+
+## Make use of Byte Buddy merging the user's classloaders
+If you're instrumenting somebody elses application, you want to limit your dependencies as much as possible. But what if you want to make use of the result of a certain function which itself is a class that's not native to Java? Do you then import that package yourself? 
+Well not quite. 
+
+You only need to import it for compilation, so for gradle a `compileOnly` would do. That's because Byte Buddy merges the user's classloaders for your **Advice** classes. This is very handy in curbing your *dependency hell*.
