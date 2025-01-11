@@ -60,7 +60,7 @@ Using a tool on my phone called *nRF Connect* I was also able to identify the LA
 I also was able to debug the messages sent between my phone and the bottle, which I will be analysing.
 ### Bluetooth findings
 #### Status updates : ResponseGetCapUiState
-One message which just kept coming back was the one below, which I've split into three parts, one part was an identifier `type.googleapis.com/ResponseGetCapUiState`. The un-decoded data could mean a couple of things, my guess right now is that it represents the filtering status (Adventure, Purifying, off, ...) and the current volume.
+One message which just kept coming back was the one below, which I've split into three parts, one part was an identifier `type.googleapis.com/ResponseGetCapUiState`. The encoded data could mean a couple of things, my guess right now is that it represents the filtering status (Adventure, Purifying, off, ...) and the current volume.
 ```
 ?
 0D-03-00-00-00-10-01-1A-31-0A-29
