@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Debugging your Byte Buddy Agent
+title: Tips & Tricks for your Byte Buddy Agent
 order: 1
 ---
 

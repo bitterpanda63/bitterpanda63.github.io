@@ -14,7 +14,7 @@ Spring Webflux primarily uses the Reactor Project which uses [Netty](https://net
 
 [Project Reactor](https://projectreactor.io/) has a couple of parts, but the one we care about is **Reactor Netty**. We can easily verify that this is used by webflux using a [quick github search](https://github.com/search?q=repo%3Aspring-projects%2Fspring-framework+reactor.netty&type=code&p=3). Looking through the docs it becomes clear we would want to instrument [`HttpServer`](https://projectreactor.io/docs/netty/release/api/reactor/netty/http/server/HttpServer.html)
 ## Running phase
-Since I have a sample app with webflux ready I'll now use that to look at all transformations and function calls for the HttpServer. I start this process by creating a Wrapper class in our project that looks like this : 
+Since I have a sample app with Webflux ready I'll now use that to look at all transformations and function calls for the HttpServer. I start this process by creating a Wrapper class in our project that looks like this : 
 ```java
 public class NettyWrapper implements Wrapper {  
     public String getName() {  
@@ -84,18 +84,18 @@ hasSuperType(nameContains("reactor.netty.http.server.HttpServerRequest").and(isI
 Using this I came across an internal class called [`HttpServerOperations`](https://github.com/reactor/reactor-netty/blob/7dcfe8585bba9903be570adc02ebbfd202c1c4b9/reactor-netty-http/src/main/java/reactor/netty/http/server/HttpServerOperations.java#L178), which has a constructor method who gets the HttpRequest from Netty. however this interface is very primitive, it provides support for method, uri & headers. The best course of action is to parse data on exit of this function, and then read from HttpServerOperations object.
 
 ### Ok, but how do we do extraction?
-There are a couple of ways to do extraction, You can use java reflection to access all objects, you can import the library into your agent but both of these have drawbacks : Java Reflection is very slow and importing the library into your agent can cause dependency helll.
-There is an alternative: Downcasting, you create interfaces with the functions you need from the class you are intercepting and then you cast.
-
-For a full context object we need to parse the following values : 
+Luckily Byte Buddy has got us covered, it merges the different ClassLoaders so that we can just use the interface. We do need to add a `compileOnly` entry so the compiler knows what we are referencing : 
 ```java
-protected String method;  
-//protected String source;  
-protected String url;  
-//protected String route;  
-protected String remoteAddress;  
-protected HashMap<String, String> headers;  
-protected HashMap<String, String[]> query;  
-protected HashMap<String, String> cookies;  
+compileOnly 'io.projectreactor.netty:reactor-netty-core:1.2.1' // For Spring Webflux
 ```
-Luckily we do not have to worry about route which will be built from the url, and source is a constant that's based on the framework.
+After we do that it's smooth sailing, we can use `@This` in the exit advice to get the object after the constructor has finished it's job. So that results in : 
+```java
+@Advice.OnMethodExit(suppress = Throwable.class)
+public static void after(
+	@Advice.This(typing = DYNAMIC, optional = true) HttpServerRequest target
+) {
+	// ...
+}
+```
+
+Happy coding! 💜
