@@ -1,0 +1,21 @@
+---
+layout: post
+title: My Terminal Window Titles Suck
+order: 1
+---
+
+Honestly they are just not telling me what I want to know, The current directory and username already take up most of the space.
+
+So I'm going to try and fix it, for fun. I discovered I can change the terminal window title easily by setting the env variable `PROMPT_COMMAND` to :
+```sh
+echo -ne "\033]0;My title here\007"
+```
+Which is awesome, but now we have to get a decent terminal title, for this I'm thinking we might want to use a local LLM. 
+Obviously I'll be using Python so let's create a new project and install [Huggingface](https://huggingface.co/docs/transformers/installation) : 
+```sh
+mkdir termtiles && cd termtiles
+poetry init
+poetry add transformers
+```
+
+Continuing...
