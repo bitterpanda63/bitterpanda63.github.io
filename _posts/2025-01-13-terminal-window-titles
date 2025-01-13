@@ -16,6 +16,10 @@ Obviously I'll be using Python so let's create a new project and install [Huggin
 mkdir termtiles && cd termtiles
 poetry init
 poetry add transformers
+poetry add 'transformers[torch]'
 ```
+## Getting the AI working
+The idea is that we provide the working directory together with the last two commands and the ls of the working directory and it should provide a 3 or 4 word explainer. We might have to tweak it :0
+To make sure it works on my laptop I'll be choosing a more leightweight LLM
 
-Continuing...
+<Continuing later...>
