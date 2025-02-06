@@ -4,10 +4,8 @@ title: Changing the output of a Java function using Byte Buddy
 order: 1
 ---
 
-Hiya! I'm a developer for Aikido working on [Zen by Aikido](https://aikido.dev/zen). It's a project that requires a lot of instrumentation/monkey-patching. So for our Java version we've decided to use [ByteBuddy](https://bytebuddy.net),
-which is also used by (iirc) Opentelemetry and Datadog.
-
-One of the things I sometimes have to do is to change the output of a given function. This is how you can do that with Byte Buddy :
+You can do a lot of cool things with Byte Buddy, although not everything is very clearly laid out in their docs, here's
+how you can change the output of a function:
 
 ## Skipping function execution
 The first step in changing the return value is most likely skipping the execution of the function. You *can* change the return value of a function without skipping execution however we won't do that in this blogpost.
